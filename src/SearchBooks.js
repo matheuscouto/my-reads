@@ -1,27 +1,50 @@
 import React from 'react'
-import { Link } from 'react-router-dom' 
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import Book from './Book' 
 
 class SearchBooks extends React.Component{
+
+    onChangeHandler = (e) => {
+        this.props.searchBook(e.target.value)
+    }
+
+    componentWillReceiveProps(props){
+        console.log('SearchBook props:', props )
+    }
+
+    componentWillUnmount(){
+        this.props.clearSearch()
+    }
+
     render(){
         return(
             <div className="search-books">
                 <div className="search-books-bar">
                 <Link to="/" className="close-search">Close</Link>
                 <div className="search-books-input-wrapper">
-                    {/*
-                    NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                    You can find these search terms here:
-                    https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                    However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                    you don't find a specific author or title. Every search is limited by search terms.
-                    */}
-                    <input type="text" placeholder="Search by title or author"/>
-
+                    <input 
+                        type="text" 
+                        placeholder="Search by title or author" 
+                        value={this.props.queryTerm} 
+                        onChange={this.onChangeHandler}/>
                 </div>
                 </div>
                 <div className="search-books-results">
-                <ol className="books-grid"></ol>
+                <ol className="books-grid">
+                    {
+                        _.map(this.props.queryResult,(book) => (
+                            <li key={book.id}>
+                                <Book
+                                    key={book.id}
+                                    bookInfo={book}
+                                    updateShelf={this.props.updateShelf}
+                                    checkBookOnDisplay={this.props.checkBookOnDisplay}
+                                    />
+                            </li>
+                        ))
+                    }
+                </ol>
                 </div>
             </div>
         )

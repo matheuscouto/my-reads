@@ -7,7 +7,24 @@ import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
-    booksOnDisplay: []
+    booksOnDisplay: [],
+    queryTerm: '',
+    queryResult: []
+  }
+
+  checkBookOnDisplay = (book) => {
+    const isBookOnDisplay = this.state.booksOnDisplay.filter(
+        (bookOnDisplay) => (
+          bookOnDisplay.id === book.id
+        ))
+    return (isBookOnDisplay.length) ? (isBookOnDisplay[0].shelf) : ('none')
+  }
+
+  clearSearch = () => {
+    this.setState({
+      queryTerm: '',
+      queryResult: []
+    })
   }
 
   getShelfs = () => {
@@ -24,6 +41,24 @@ class BooksApp extends React.Component {
     )
   }
 
+  searchBook = (query) => {
+    if (!query){
+      this.clearSearch()
+      return
+    }
+
+    this.setState({
+      queryTerm: query
+    })
+
+    BooksAPI.search(query).then((books) => (
+      this.setState({
+        queryResult: (books.error) ? [] : books
+      })
+      
+    ))
+  }
+
   componentWillMount(){
     this.getShelfs()
   }
@@ -31,8 +66,22 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-          <Route exact path="/" render={() => (<ListBooks booksOnDisplay={this.state.booksOnDisplay} updateShelf={this.updateShelf}/>)} />
-          <Route path="/search" component={SearchBooks} />        
+          <Route exact path="/" render={() => (
+            <ListBooks 
+              booksOnDisplay={this.state.booksOnDisplay} 
+              updateShelf={this.updateShelf}
+            />)} 
+          />
+          <Route path="/search" render={() => (
+            <SearchBooks 
+              queryResult={this.state.queryResult} 
+              queryTerm={this.state.queryTerm} 
+              searchBook={this.searchBook}  
+              updateShelf={this.updateShelf}
+              clearSearch={this.clearSearch}
+              checkBookOnDisplay={this.checkBookOnDisplay}
+            />)} 
+          />        
       </div>
     )
   }

@@ -13,10 +13,6 @@ class ListBooks extends React.Component {
         return _.groupBy(this.props.booksOnDisplay,'shelf')
     }
 
-    componentWillReceiveProps(props){
-        console.log('ListBooks Receive props:',props)
-    }
-
     render(){
         return(
             <div className="list-books">
@@ -27,7 +23,11 @@ class ListBooks extends React.Component {
                 <div>
                     {
                         _.map(this.getBooksByShelf(),(bookshelf,bookshelfTitle) => (
-                            <Bookshelf key={bookshelfTitle} bookshelfTitle={bookshelfTitle} bookshelfCollection={bookshelf} updateShelf={this.props.updateShelf}/>
+                            <Bookshelf 
+                                key={bookshelfTitle} 
+                                bookshelfTitle={bookshelfTitle} 
+                                bookshelfCollection={bookshelf} 
+                                updateShelf={this.props.updateShelf}/>
                         ))
                     }
                 </div>
