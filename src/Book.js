@@ -2,10 +2,6 @@ import React from 'react'
 
 class Book extends React.Component{
 
-    state={
-        shelf: 'none'
-    }
-
     componentWillMount(props){
         this.setState({
             shelf: (this.props.bookInfo.shelf)||(this.props.checkBookOnDisplay(this.props.bookInfo))
@@ -14,9 +10,6 @@ class Book extends React.Component{
 
     onChangeHandler = (e) => {
         this.props.updateShelf(this.props.bookInfo,e.target.value)
-        this.setState({
-            shelf: e.target.value
-        })
     }
 
     render(){
