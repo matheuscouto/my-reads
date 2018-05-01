@@ -88,10 +88,6 @@ class BooksApp extends React.Component {
   // It updates the queryResult state with a collections of books
   // It also prevents the user to search for an empty term using the function clearSearch
   searchBook = (query) => {
-    if (!query){
-      this.clearSearch()
-      return
-    }
     this.showSpinner()
     this.setState({
       queryTerm: query

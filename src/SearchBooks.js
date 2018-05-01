@@ -6,7 +6,7 @@ import Book from './Book'
 class SearchBooks extends React.Component{
 
     onChangeHandler = (e) => {
-        this.props.searchBook(e.target.value)
+        e.target.value ? this.props.searchBook(e.target.value) : this.props.clearSearch()
     }
 
     // Clear search on unmount to prevent current query term to be rendered next time it mounts

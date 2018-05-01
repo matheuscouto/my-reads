@@ -47,7 +47,7 @@ class SimpleSnackbar extends React.Component {
             <Button 
                 key="undo" 
                 color="secondary" 
-                size="small" 
+                size="small"
                 onClick={this.props.undoUpdate}
             >
               UNDO
