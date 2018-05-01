@@ -6,9 +6,13 @@ class Book extends React.Component{
         this.props.updateShelf(this.props.bookInfo,e.target.value)
     }
 
+    componentWillReceiveProps(props){
+        console.log("Book info:", this.props.bookInfo)
+    }
+
     render(){
         const title = this.props.bookInfo.title
-        const author = this.props.bookInfo.author
+        const author = this.props.bookInfo.authors[0]
 
         // Prevents crashing if the current book doesn't have a thumbnail
         const coverUrl = (this.props.bookInfo.imageLinks)?(this.props.bookInfo.imageLinks.thumbnail):('')

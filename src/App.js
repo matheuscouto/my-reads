@@ -4,26 +4,42 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
+import { PacmanLoader } from 'react-spinners';
 
 class BooksApp extends React.Component {
   state = {
     booksOnDisplay: [],
     queryTerm: '',
-    queryResult: []
+    queryResult: [],
+    loading: false,
   }
 
 
   // Updates the current state with a collection of books that are on any shelf
   getShelfs = () => {
-    BooksAPI.getAll().then((books) => (
+    BooksAPI.getAll().then((books) => {
       this.setState({
         booksOnDisplay: books
       })
-    ))
+      this.hideSpinner()
+    })
+  }
+
+  showSpinner = () => {
+    this.setState({
+      loading:true
+    })
+  }
+
+  hideSpinner = () => {
+    this.setState({
+      loading:false
+    })
   }
 
   // Uses BooksAPI to update a given shelf with a given book
   updateShelf = (book,shelf) => {
+    this.showSpinner()
     BooksAPI.update(book,shelf).then(() => this.getShelfs())
   }
 
@@ -35,14 +51,16 @@ class BooksApp extends React.Component {
       this.clearSearch()
       return
     }
+    this.showSpinner()
     this.setState({
       queryTerm: query
     })
-    BooksAPI.search(query).then((books) => (
+    BooksAPI.search(query).then((books) => {
       this.setState({
         queryResult: (books.error) ? [] : books
       })
-    ))
+      this.hideSpinner()
+    })
   }
 
 // Clear all query related states
@@ -64,6 +82,7 @@ class BooksApp extends React.Component {
   }
 
   componentWillMount(){
+    this.showSpinner()
     this.getShelfs()
   }
 
@@ -85,7 +104,13 @@ class BooksApp extends React.Component {
               clearSearch={this.clearSearch}
               checkBookOnDisplay={this.checkBookOnDisplay}
             />)} 
-          />        
+          />  
+          {(
+            !this.state.loading) || (
+              <div className='sweet-loading'>
+                <PacmanLoader color={'#E0D00D'} />
+              </div>      
+          )}
       </div>
     )
   }
