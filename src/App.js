@@ -1,19 +1,67 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { PacmanLoader } from 'react-spinners';
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchBooks from './SearchBooks'
-import { PacmanLoader } from 'react-spinners';
+import SnackBar from './SnackBar'
 
 class BooksApp extends React.Component {
   state = {
+    initial: true,
+    loading: false,
+    snackBarOpen: false,
+    undo: true,
     booksOnDisplay: [],
     queryTerm: '',
     queryResult: [],
-    loading: false,
+    lastUpdate: {
+      book: {},
+      prevShelf: '',
+      currentShelf: '',
+    },
   }
 
+  // Open / Close Snack Bar
+  handleSnackOpen = () => {
+    this.setState({ snackBarOpen: true });
+  };
+  handleSnackClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ snackBarOpen: false });
+  };
+
+  // Show / Hide Loading Spinner
+  showSpinner = () => {
+    this.setState({
+      loading:true
+    })
+  }
+  hideSpinner = () => {
+    this.setState({
+      loading:false
+    })
+  }
+
+  // Store last update
+  storeLastUpdate(book,shelf){
+    this.setState({
+      lastUpdate:{
+        book,
+        prevShelf: this.checkBookOnDisplay(book),
+        currentShelf: shelf
+      }
+    })
+  }
+
+  // Undo last change
+  undoUpdate = () => {
+    this.updateShelf(this.state.lastUpdate.book,this.state.lastUpdate.prevShelf,true)
+    this.handleSnackClose()
+  }
 
   // Updates the current state with a collection of books that are on any shelf
   getShelfs = () => {
@@ -21,25 +69,18 @@ class BooksApp extends React.Component {
       this.setState({
         booksOnDisplay: books
       })
+
       this.hideSpinner()
+      !this.state.initial && !this.state.undo ? this.handleSnackOpen() : this.setState({initial:false, undo:false})
     })
   }
 
-  showSpinner = () => {
-    this.setState({
-      loading:true
-    })
-  }
-
-  hideSpinner = () => {
-    this.setState({
-      loading:false
-    })
-  }
+  
 
   // Uses BooksAPI to update a given shelf with a given book
-  updateShelf = (book,shelf) => {
+  updateShelf = (book,shelf,undo=false) => {
     this.showSpinner()
+    !undo ? this.storeLastUpdate(book,shelf) : (this.setState({undo:true}))
     BooksAPI.update(book,shelf).then(() => this.getShelfs())
   }
 
@@ -63,7 +104,7 @@ class BooksApp extends React.Component {
     })
   }
 
-// Clear all query related states
+  // Clear all query related states
   clearSearch = () => {
     this.setState({
       queryTerm: '',
@@ -107,10 +148,17 @@ class BooksApp extends React.Component {
           />  
           {(
             !this.state.loading) || (
-              <div className='sweet-loading'>
+              <div className='sweet-overlay'>
                 <PacmanLoader color={'#E0D00D'} />
               </div>      
           )}
+
+          <SnackBar 
+            open={this.state.snackBarOpen} 
+            handleClose={this.handleSnackClose}
+            undoUpdate={this.undoUpdate}
+            lastUpdate={this.state.lastUpdate}
+          />
       </div>
     )
   }
