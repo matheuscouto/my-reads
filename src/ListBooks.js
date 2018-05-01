@@ -9,6 +9,7 @@ import _ from 'lodash'
 
 class ListBooks extends React.Component {
 
+    // Uses lodash groupBy to group the book collection by shelf
     getBooksByShelf(){
         return _.groupBy(this.props.booksOnDisplay,'shelf')
     }
@@ -22,6 +23,7 @@ class ListBooks extends React.Component {
             <div className="list-books-content">
                 <div>
                     {
+                        // Maps over grouped book collection to render each Bookshelf component with its own book items
                         _.map(this.getBooksByShelf(),(bookshelf,bookshelfTitle) => (
                             <Bookshelf 
                                 key={bookshelfTitle} 

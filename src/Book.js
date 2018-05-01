@@ -2,12 +2,6 @@ import React from 'react'
 
 class Book extends React.Component{
 
-    componentWillMount(props){
-        this.setState({
-            shelf: (this.props.bookInfo.shelf)||(this.props.checkBookOnDisplay(this.props.bookInfo))
-        })
-    }
-
     onChangeHandler = (e) => {
         this.props.updateShelf(this.props.bookInfo,e.target.value)
     }
@@ -15,14 +9,19 @@ class Book extends React.Component{
     render(){
         const title = this.props.bookInfo.title
         const author = this.props.bookInfo.author
+
+        // Prevents crashing if the current book doesn't have a thumbnail
         const coverUrl = (this.props.bookInfo.imageLinks)?(this.props.bookInfo.imageLinks.thumbnail):('')
+
+        // If props doesn't come with a shelf, it uses checkBookOnDisplay to resolve it
+        const shelf = (this.props.bookInfo.shelf)||(this.props.checkBookOnDisplay(this.props.bookInfo))
         
         return(
             <div className="book">
                 <div className="book-top">
                     <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${coverUrl})` }}></div>
                     <div className="book-shelf-changer">
-                        <select onChange={this.onChangeHandler} value={this.state.shelf}>
+                        <select onChange={this.onChangeHandler} value={shelf}>
                             <option value="" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>

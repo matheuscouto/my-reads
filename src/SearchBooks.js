@@ -9,10 +9,7 @@ class SearchBooks extends React.Component{
         this.props.searchBook(e.target.value)
     }
 
-    componentWillReceiveProps(props){
-        console.log('SearchBook props:', props )
-    }
-
+    // Clear search on unmount to prevent current query term to be rendered next time it mounts
     componentWillUnmount(){
         this.props.clearSearch()
     }
@@ -33,6 +30,7 @@ class SearchBooks extends React.Component{
                 <div className="search-books-results">
                 <ol className="books-grid">
                     {
+                        // Loop over the queryResult collection of books to render a Book component for each item
                         _.map(this.props.queryResult,(book) => (
                             <li key={book.id}>
                                 <Book
