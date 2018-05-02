@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import Book from './Book' 
+import {DebounceInput} from 'react-debounce-input';
 
 class SearchBooks extends React.Component{
 
@@ -20,7 +21,8 @@ class SearchBooks extends React.Component{
                 <div className="search-books-bar">
                     <Link to="/" className="close-search">Close</Link>
                     <div className="search-books-input-wrapper">
-                        <input 
+                        <DebounceInput 
+                            debounceTimeout={300}
                             type="text" 
                             placeholder="Search by title or author" 
                             value={this.props.queryTerm} 
