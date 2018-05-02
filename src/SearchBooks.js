@@ -22,7 +22,7 @@ class SearchBooks extends React.Component{
                     <Link to="/" className="close-search">Close</Link>
                     <div className="search-books-input-wrapper">
                         <DebounceInput 
-                            debounceTimeout={300}
+                            debounceTimeout={400}
                             type="text" 
                             placeholder="Search by title or author" 
                             value={this.props.queryTerm} 
